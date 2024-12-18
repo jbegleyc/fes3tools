@@ -1,4 +1,4 @@
-module fes3tools
+module github.com/jbegleyc/fes3tools
 
 go 1.22.3
 
