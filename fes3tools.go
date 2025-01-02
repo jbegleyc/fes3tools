@@ -86,3 +86,47 @@ func GetFile(bucket string, fname string) string {
 
 	return buf.String()
 }
+
+func PutFile(bucket string, fname string, data string) string {
+	// Load the Shared AWS Configuration (~/.aws/config)
+	cfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create an Amazon S3 service client
+	client := s3.NewFromConfig(cfg)
+
+	// This uploads the contents of the buffer to S3
+	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(fname),
+		Body:   bytes.NewReader([]byte(data)),
+	})
+	if err != nil {
+		return err.Error()
+	}
+
+	return "Suceess"
+}
+
+func CheckFile(bucket string, fname string) bool {
+	// Load the Shared AWS Configuration (~/.aws/config)
+	cfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create an Amazon S3 service client
+	client := s3.NewFromConfig(cfg)
+
+	_, err = client.GetObject(context.TODO(), &s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(fname),
+	})
+	if err != nil {
+		return false
+	}
+
+	return true
+}
